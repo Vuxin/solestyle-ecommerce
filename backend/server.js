@@ -124,9 +124,6 @@ async function createAdmins() {
 }
 
 // ─── AUTO INIT FUNCTIONS ──────────────────────────────────────────
-const bcrypt = require("bcryptjs");
-
-async function createAdmins() {
 
 async function runSeed(force = false) {
   const Category = require("./models/Category");
