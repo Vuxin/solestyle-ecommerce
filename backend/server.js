@@ -108,20 +108,22 @@ app.use((req, res) => {
 });
 
 // ─── CONNEXION MONGODB ────────────────────────────────────────────
+console.log("DEBUG: MONGO_URI =", process.env.MONGO_URI ? "DÉFINIE" : "NON DÉFINIE");
+console.log("DEBUG: MONGODB_URI =", process.env.MONGODB_URI ? "DÉFINIE" : "NON DÉFINIE");
+
 const MONGO_URI =
   process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/solestyle";
 
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("✅  MongoDB connecté");
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(
-        `🚀  Serveur lancé sur http://localhost:${process.env.PORT || 5000}`,
-      );
+    console.log("✅  MongoDB connected successfully");
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀  Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("❌  Erreur MongoDB:", err.message);
+    console.error("❌  MongoDB connection error:", err.message);
     process.exit(1);
   });
