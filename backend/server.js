@@ -109,12 +109,26 @@ async function createAdmins() {
   }
 }
 
-async function runSeed() {
+// ─── FORCE SEED ROUTE (via API) ─────────────────────────────────────────
+app.get("/api/force-seed", async (req, res) => {
+  try {
+    const Product = require("./models/Product");
+    const Category = require("./models/Category");
+    await Product.deleteMany({});
+    await Category.deleteMany({});
+    await runSeed(true);
+    res.json({ message: "Base de données RE-initialisée avec succès (44 produits) !" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+async function runSeed(force = false) {
   const Category = require("./models/Category");
   const Product = require("./models/Product");
 
   const productCount = await Product.countDocuments();
-  if (productCount > 0) {
+  if (productCount > 0 && !force) {
     console.log(`ℹ️  DB already has ${productCount} products. Skipping seed.`);
     return;
   }
