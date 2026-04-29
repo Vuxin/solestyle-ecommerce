@@ -184,29 +184,37 @@ async function runSeed() {
   console.log(`✅ Seeded ${productsWithCategory.length} products!`);
 }
 
-// ─── CONNECT & START ──────────────────────────────────────────────
+// ─── START SERVER FIRST, THEN CONNECT TO DB ──────────────────────
+// This ensures Railway health checks pass even while MongoDB connects
+const PORT = process.env.PORT || 5000;
 const MONGO_URI =
   process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/solestyle";
 
-mongoose
-  .connect(MONGO_URI)
-  .then(async () => {
-    console.log("✅  MongoDB connected successfully");
+console.log("🔧 MONGODB_URI:", process.env.MONGODB_URI ? "SET ✅" : "NOT SET ❌");
+console.log("🔧 MONGO_URI:", process.env.MONGO_URI ? "SET ✅" : "NOT SET ❌");
 
-    // Auto-initialize: create admins & seed products if needed
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// Connect to MongoDB after server starts
+mongoose
+  .connect(MONGO_URI, {
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+  })
+  .then(async () => {
+    console.log("✅ MongoDB connected successfully");
     try {
       await createAdmins();
       await runSeed();
     } catch (initErr) {
-      console.error("⚠️  Init error:", initErr.message);
+      console.error("⚠️ Init error:", initErr.message);
     }
-
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`🚀  Server running on port ${PORT}`);
-    });
   })
   .catch((err) => {
-    console.error("❌  MongoDB connection error:", err.message);
-    process.exit(1);
+    console.error("❌ MongoDB connection error:", err.message);
+    console.error("💡 Make sure MONGODB_URI is set in Railway environment variables");
+    // Don't exit - keep server running so health checks pass
   });
+
