@@ -193,7 +193,7 @@ const MONGO_URI =
 console.log("🔧 MONGODB_URI:", process.env.MONGODB_URI ? "SET ✅" : "NOT SET ❌");
 console.log("🔧 MONGO_URI:", process.env.MONGO_URI ? "SET ✅" : "NOT SET ❌");
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Serveur démarré sur le port ${PORT}`);
 });
 
