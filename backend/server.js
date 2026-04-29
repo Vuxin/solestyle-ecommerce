@@ -81,6 +81,20 @@ app.get("/api/createAdmin", async (req, res) => {
   }
 });
 
+// ─── FORCE SEED ROUTE (via API) ─────────────────────────────────────────
+app.get("/api/force-seed", async (req, res) => {
+  try {
+    const Product = require("./models/Product");
+    const Category = require("./models/Category");
+    await Product.deleteMany({});
+    await Category.deleteMany({});
+    await runSeed(true);
+    res.json({ message: "Base de données RE-initialisée avec succès (44 produits) !" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── FALLBACK ─────────────────────────────────────────────────────
 app.use((req, res) => {
   if (req.path.startsWith("/api")) {
@@ -109,19 +123,10 @@ async function createAdmins() {
   }
 }
 
-// ─── FORCE SEED ROUTE (via API) ─────────────────────────────────────────
-app.get("/api/force-seed", async (req, res) => {
-  try {
-    const Product = require("./models/Product");
-    const Category = require("./models/Category");
-    await Product.deleteMany({});
-    await Category.deleteMany({});
-    await runSeed(true);
-    res.json({ message: "Base de données RE-initialisée avec succès (44 produits) !" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// ─── AUTO INIT FUNCTIONS ──────────────────────────────────────────
+const bcrypt = require("bcryptjs");
+
+async function createAdmins() {
 
 async function runSeed(force = false) {
   const Category = require("./models/Category");
