@@ -196,7 +196,7 @@ async function runSeed(force = false) {
   ];
 
   const productsWithCategory = products.map((p) => ({ ...p, category: sneakers, isActive: true }));
-  await Product.insertMany(productsWithCategory);
+  await Product.create(productsWithCategory);
   console.log(`✅ Seeded ${productsWithCategory.length} products!`);
 }
 
