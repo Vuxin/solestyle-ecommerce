@@ -3117,16 +3117,22 @@
         const AuthProvider = ({ children }) => {
             const [user, setUser] = useState(null);
             const [token, setToken] = useState(localStorage.getItem('token'));
+            const [authLoading, setAuthLoading] = useState(!!localStorage.getItem('token'));
             const showToast = useContext(ToastContext);
 
             useEffect(() => {
                 if (token) {
+                    setAuthLoading(true);
                     axios.get(`${API_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
-                        .then(res => setUser(res.data))
+                        .then(res => { setUser(res.data); setAuthLoading(false); })
                         .catch(() => {
                             setToken(null);
+                            setUser(null);
                             localStorage.removeItem('token');
+                            setAuthLoading(false);
                         });
+                } else {
+                    setAuthLoading(false);
                 }
             }, [token]);
 
@@ -3152,7 +3158,7 @@
             };
 
             return (
-                <AuthContext.Provider value={{ user, token, login, logout }}>
+                <AuthContext.Provider value={{ user, token, login, logout, authLoading }}>
                     {children}
                 </AuthContext.Provider>
             );
@@ -4645,7 +4651,7 @@
         };
 
         const AdminDashboard = () => {
-            const {token, user} = useContext(AuthContext);
+            const {token, user, authLoading} = useContext(AuthContext);
                                 const [orders, setOrders] = useState([]);
                                 const [products, setProducts] = useState([]);
                                 const [users, setUsers] = useState([]);
@@ -4872,7 +4878,8 @@
             const activeOrders = orders.filter(o => o.orderStatus !== 'delivered' && o.orderStatus !== 'cancelled');
             const historyOrders = orders.filter(o => o.orderStatus === 'delivered' || o.orderStatus === 'cancelled');
 
-                                if (user?.role !== 'admin') return <div className="container" style={{ padding: '100px 0', textAlign: 'center' }}>Accès refusé</div>;
+                                if (authLoading) return <div className="container" style={{ padding: '100px 0', textAlign: 'center', fontSize: '24px' }}>⏳ Chargement...</div>;
+                                if (!user || user?.role !== 'admin') return <div className="container" style={{ padding: '100px 0', textAlign: 'center' }}>Accès refusé. Veuillez vous connecter avec un compte administrateur.</div>;
 
                                 return (
                                 <div className="container page-enter admin-layout">
