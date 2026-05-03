@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema(
     description: { type: String },
     price: { type: Number, required: true },
     oldPrice: { type: Number },
-    brand: { type: String, enum: ["Nike", "Jordan", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Asics", "Salomon", "Birkenstock", "Ugg", "Balenciaga", "On", "Prada", "Dior", "Hermes", "Autre"], default: "Autre" },
+    brand: { type: String, enum: ["Nike", "Jordan", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Asics", "Saucony", "Salomon", "Birkenstock", "Ugg", "Balenciaga", "On", "Prada", "Dior", "Hermes", "Autre"], default: "Autre" },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     sizes: [Number],
     images: [String],

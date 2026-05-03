@@ -3646,12 +3646,12 @@
                 { name: "Nike", color: "#c9a96e" },
                 { name: "Adidas", color: "#b8922d" },
                 { name: "New Balance", color: "#d4b483" },
-                { name: "Puma", color: "#e8c87a" },
-                { name: "Converse", color: "#a07830" },
+                { name: "Asics", color: "#d9c49a" },
+                { name: "Saucony", color: "#c4a46b" },
                 { name: "Jordan", color: "#c9a96e" },
-                { name: "ASICS", color: "#d9c49a" },
+                { name: "Vans", color: "#e8c87a" },
+                { name: "Puma", color: "#a07830" },
                 { name: "Dior", color: "#b8922d" },
-                { name: "Louis Vuitton", color: "#a07830" },
                 { name: "Balenciaga", color: "#c9b890" }
             ];
 
@@ -3823,7 +3823,7 @@
             const [loading, setLoading] = useState(true);
             const [filters, setFilters] = useState(initialFilters || { category: '', search: '', brand: 'all' });
             const [filtersOpen, setFiltersOpen] = useState(false);
-            const brands = ["Nike", "Adidas", "Puma", "New Balance", "Converse", "Vans"];
+            const brands = ["Nike", "Adidas", "New Balance", "Asics", "Saucony", "Jordan", "Puma", "Converse", "Vans", "On"];
 
             useEffect(() => {
                 axios.get(`${API_URL}/categories`).then(res => setCategories(res.data));
@@ -5197,7 +5197,7 @@
                                                                 <div className="form-group">
                                                                     <label>Marque</label>
                                                                     <select value={newProd.brand} onChange={e => setNewProd({ ...newProd, brand: e.target.value })}>
-                                                                        {["Nike", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Autre"].map(b => (
+                                                                        {["Nike", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Asics", "Saucony", "Jordan", "On", "Autre"].map(b => (
                                                                             <option key={b} value={b}>{b}</option>
                                                                         ))}
                                                                     </select>
