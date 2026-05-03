@@ -3173,13 +3173,30 @@
             const fetchCart = async () => {
                 if (!token) {
                     // Local cart for guests (simplified)
-                    const local = localStorage.getItem('cart');
-                    if (local) setCart(JSON.parse(local));
+                    try {
+                        const local = localStorage.getItem('cart');
+                        if (local) {
+                            const parsed = JSON.parse(local);
+                            // Filter out any corrupted items where product is null
+                            if (parsed && parsed.items) {
+                                parsed.items = parsed.items.filter(i => i && i.product && i.product._id);
+                            }
+                            setCart(parsed || { items: [] });
+                        }
+                    } catch(e) {
+                        localStorage.removeItem('cart');
+                        setCart({ items: [] });
+                    }
                     return;
                 }
                 try {
                     const res = await axios.get(`${API_URL}/cart`, { headers: { Authorization: `Bearer ${token}` } });
-                    setCart(res.data);
+                    // Filter out items where product is null (deleted products)
+                    const cartData = res.data;
+                    if (cartData && cartData.items) {
+                        cartData.items = cartData.items.filter(i => i && i.product && i.product._id);
+                    }
+                    setCart(cartData || { items: [] });
                 } catch (err) {
                     console.error("Erreur panier");
                 }
@@ -3250,8 +3267,8 @@
                 }
             };
 
-            const cartCount = cart.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
-            const subtotal = cart.items?.reduce((acc, item) => acc + (item.product.price * item.quantity), 0) || 0;
+            const cartCount = cart.items?.reduce((acc, item) => acc + (item?.quantity || 0), 0) || 0;
+            const subtotal = cart.items?.reduce((acc, item) => acc + ((item?.product?.price || 0) * (item?.quantity || 0)), 0) || 0;
 
             return (
                 <CartContext.Provider value={{ cart, cartCount, subtotal, addToCart, removeFromCart, clearCart, isCartOpen, setIsCartOpen }}>
