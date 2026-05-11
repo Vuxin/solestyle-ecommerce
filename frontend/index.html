@@ -4780,6 +4780,35 @@
                                 const [uploading, setUploading] = useState(false);
                                 const showToast = useContext(ToastContext);
 
+                                // --- BRAND MANAGEMENT ---
+                                const DEFAULT_BRANDS = ["Nike", "Jordan", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Asics", "Saucony", "Salomon", "Birkenstock", "Ugg", "Balenciaga", "On", "Prada", "Dior", "Hermes", "Louis Vuitton", "Autre"];
+                                const [customBrands, setCustomBrands] = useState(() => {
+                                    try { const stored = localStorage.getItem('solestyle_custom_brands'); return stored ? JSON.parse(stored) : []; } catch { return []; }
+                                });
+                                const allBrands = [...DEFAULT_BRANDS, ...customBrands.filter(b => !DEFAULT_BRANDS.includes(b))];
+                                const [newBrandName, setNewBrandName] = useState('');
+                                const [newBrandEmoji, setNewBrandEmoji] = useState('👟');
+
+                                const handleAddBrand = () => {
+                                    const name = newBrandName.trim();
+                                    if (!name) return showToast('Nom de marque requis', 'error');
+                                    if (allBrands.includes(name)) return showToast('Cette marque existe déjà !', 'error');
+                                    const updated = [...customBrands, name];
+                                    setCustomBrands(updated);
+                                    localStorage.setItem('solestyle_custom_brands', JSON.stringify(updated));
+                                    setNewBrandName('');
+                                    setNewBrandEmoji('👟');
+                                    showToast(`Marque "${name}" ajoutée avec succès !`, 'success');
+                                };
+
+                                const handleDeleteBrand = (brand) => {
+                                    if (!window.confirm(`Supprimer la marque "${brand}" ?`)) return;
+                                    const updated = customBrands.filter(b => b !== brand);
+                                    setCustomBrands(updated);
+                                    localStorage.setItem('solestyle_custom_brands', JSON.stringify(updated));
+                                    showToast(`Marque "${brand}" supprimée`, 'success');
+                                };
+
             const handleConfirmDelivery = async (id) => {
                 try {
                                     await axios.put(`${API_URL}/orders/${id}/status`, { orderStatus: 'delivered' }, { headers: { Authorization: `Bearer ${token}` } });
@@ -5000,6 +5029,7 @@
                                             <li className={activeTab === 'promo' ? 'active' : ''} onClick={() => setActiveTab('promo')}>🏷️ Codes Promo</li>
                                             <li className={activeTab === 'reviews' ? 'active' : ''} onClick={() => setActiveTab('reviews')}>⭐ Avis</li>
                                             <li className={activeTab === 'clients' ? 'active' : ''} onClick={() => setActiveTab('clients')}>👥 Clients</li>
+                                            <li className={activeTab === 'marques' ? 'active' : ''} onClick={() => setActiveTab('marques')}>🏷️ Marques</li>
                                         </ul>
                                     </aside>
                                     <div>
@@ -5287,7 +5317,7 @@
                                                                 <div className="form-group">
                                                                     <label>Marque</label>
                                                                     <select value={newProd.brand} onChange={e => setNewProd({ ...newProd, brand: e.target.value })}>
-                                                                        {["Nike", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Asics", "Saucony", "Jordan", "On", "Autre"].map(b => (
+                                                                        {allBrands.map(b => (
                                                                             <option key={b} value={b}>{b}</option>
                                                                         ))}
                                                                     </select>
@@ -5357,6 +5387,85 @@
                                                     </table>
                                                 </div>
                                             </>
+                                        )}
+
+                                        {activeTab === 'marques' && (
+                                            <div className="page-enter">
+                                                <div className="flex justify-between items-center mb-8">
+                                                    <h1 className="display-text">🏷️ Gestion des Marques</h1>
+                                                </div>
+                                                <p className="mb-8" style={{ color: '#666' }}>Ajoutez ici de nouvelles marques qui apparaîtront dans le formulaire de création de produits. Les marques par défaut ne peuvent pas être supprimées.</p>
+
+                                                {/* ADD BRAND FORM */}
+                                                <div className="cart-summary mb-8" style={{ padding: '30px', borderRadius: '12px' }}>
+                                                    <h3 className="mb-4" style={{ fontSize: '16px', fontWeight: '600' }}>➕ Ajouter une nouvelle marque</h3>
+                                                    <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                                                        <div className="form-group" style={{ flex: 1, minWidth: '200px', marginBottom: 0 }}>
+                                                            <label>Nom de la marque</label>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Ex: Salehe Bembury, Mschf..."
+                                                                value={newBrandName}
+                                                                onChange={e => setNewBrandName(e.target.value)}
+                                                                onKeyDown={e => e.key === 'Enter' && handleAddBrand()}
+                                                                style={{ width: '100%' }}
+                                                            />
+                                                        </div>
+                                                        <button
+                                                            className="btn btn-primary"
+                                                            onClick={handleAddBrand}
+                                                            style={{ padding: '12px 24px', whiteSpace: 'nowrap' }}
+                                                        >
+                                                            ✅ Ajouter
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* CUSTOM BRANDS */}
+                                                <div style={{ marginBottom: '40px' }}>
+                                                    <h3 className="mb-4" style={{ fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#999' }}>Mes marques ajoutées ({customBrands.length})</h3>
+                                                    {customBrands.length === 0 ? (
+                                                        <div style={{ padding: '40px', textAlign: 'center', background: '#f9f9f9', borderRadius: '12px', color: '#aaa' }}>
+                                                            <div style={{ fontSize: '40px', marginBottom: '12px' }}>🏷️</div>
+                                                            <div>Aucune marque ajoutée pour l'instant.</div>
+                                                            <div style={{ fontSize: '13px', marginTop: '6px' }}>Ajoutez votre première marque ci-dessus !</div>
+                                                        </div>
+                                                    ) : (
+                                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
+                                                            {customBrands.map(brand => (
+                                                                <div key={brand} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: 'linear-gradient(135deg, #fff 0%, #f8f4ef 100%)', border: '1px solid #e8ddd0', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                                        <span style={{ fontSize: '22px' }}>🏷️</span>
+                                                                        <span style={{ fontWeight: '600', color: '#333' }}>{brand}</span>
+                                                                    </div>
+                                                                    <button
+                                                                        onClick={() => handleDeleteBrand(brand)}
+                                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: '16px', padding: '4px 8px', borderRadius: '6px', transition: 'background 0.2s' }}
+                                                                        onMouseEnter={e => e.target.style.background = '#fee2e2'}
+                                                                        onMouseLeave={e => e.target.style.background = 'none'}
+                                                                        title="Supprimer cette marque"
+                                                                    >
+                                                                        🗑️
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* DEFAULT BRANDS (READ ONLY) */}
+                                                <div>
+                                                    <h3 className="mb-4" style={{ fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#999' }}>Marques par défaut ({DEFAULT_BRANDS.length})</h3>
+                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
+                                                        {DEFAULT_BRANDS.map(brand => (
+                                                            <div key={brand} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#64748b' }}>
+                                                                <span style={{ fontSize: '16px' }}>🔒</span>
+                                                                <span style={{ fontWeight: '500', fontSize: '14px' }}>{brand}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         )}
 
                                         {activeTab === 'clients' && (
