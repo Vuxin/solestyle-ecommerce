@@ -3119,7 +3119,7 @@
         const ConfigProvider = ({ children }) => {
             const [siteConfig, setSiteConfig] = useState({
                 whatsapp: '212699211666',
-                instagram: 'solestyle.ma',
+                tiktok: 'solestyle.ma',
                 email: 'contact@solestyle.ma',
                 footerText: 'SoleStyle — La référence du sneakers premium au Maroc.',
                 address: 'Casablanca, Maroc'
@@ -3564,6 +3564,7 @@
                         <div>
                             <h4 style={{ color: 'white', marginBottom: '20px' }}>Contact</h4>
                             <p style={{ color: '#aaa', fontSize: '14px', lineHeight: 2 }}>
+                                📱 TikTok: <a href={`https://www.tiktok.com/@${siteConfig.tiktok}`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>@{siteConfig.tiktok}</a><br />
                                 Email: <a href={`mailto:${siteConfig.email}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.email}</a><br />
                                 Tél: <a href={`tel:+${siteConfig.whatsapp}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.whatsapp.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4')}</a><br />
                                 {siteConfig.address}
@@ -5079,8 +5080,8 @@
                                         <input type="text" className="form-control" value={localConfig.whatsapp} onChange={e => setLocalConfig({...localConfig, whatsapp: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} />
                                     </div>
                                     <div className="form-group">
-                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>📸 Instagram (Sans le @)</label>
-                                        <input type="text" className="form-control" value={localConfig.instagram} onChange={e => setLocalConfig({...localConfig, instagram: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} />
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>🎵 TikTok (Sans le @)</label>
+                                        <input type="text" className="form-control" value={localConfig.tiktok || localConfig.instagram || ''} onChange={e => setLocalConfig({...localConfig, tiktok: e.target.value, instagram: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd' }} />
                                     </div>
                                     <div className="form-group">
                                         <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>📧 Email de contact</label>

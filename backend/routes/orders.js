@@ -128,7 +128,7 @@ router.post("/", optionalAuth, async (req, res) => {
             </div>
           </div>
           <div style="background:#f9f9f9;padding:30px;text-align:center;">
-            <p style="margin:0;color:#999;font-size:13px;">Questions ? Contactez-nous sur Instagram <strong>@solestyle.ma</strong></p>
+            <p style="margin:0;color:#999;font-size:13px;">Questions ? Retrouvez-nous sur TikTok <strong>@solestyle.ma</strong></p>
             <p style="margin:10px 0 0;color:#ccc;font-size:11px;">© 2025 SoleStyle — Tous droits réservés</p>
           </div>
         </div>
