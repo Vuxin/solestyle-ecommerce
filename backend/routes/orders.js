@@ -136,7 +136,7 @@ router.post("/", optionalAuth, async (req, res) => {
 
       // Email au CLIENT
       await resend.emails.send({
-        from: "SoleStyle <commandes@solestyle.ma>",
+        from: "SoleStyle <onboarding@resend.dev>",
         to: customerInfo.email,
         subject: `✅ Commande confirmée #${orderId} — SoleStyle`,
         html: emailHtml,
@@ -144,7 +144,7 @@ router.post("/", optionalAuth, async (req, res) => {
 
       // Notification ADMIN
       await resend.emails.send({
-        from: "SoleStyle <commandes@solestyle.ma>",
+        from: "SoleStyle <onboarding@resend.dev>",
         to: "mohamedjbark35@gmail.com",
         subject: `🛒 Nouvelle commande ${total} DH — ${customerInfo.firstName} ${customerInfo.lastName}`,
         html: `<p><b>Client :</b> ${customerInfo.firstName} ${customerInfo.lastName} (${customerInfo.email})</p>
