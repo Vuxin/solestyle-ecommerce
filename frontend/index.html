@@ -5543,43 +5543,7 @@
         };
 
         const App = () => {
-            const [route, setRoute] = useState('home');
-            const [productId, setProductId] = useState(null);
-            const [lastOrder, setLastOrder] = useState(null);
-            const [shopFilters, setShopFilters] = useState({category: '', search: '', brand: 'all' });
-
-            const navigateToShop = (filters) => {
-                setShopFilters((prev) => ({ ...prev, ...filters }));
-                setRoute('shop');
-            };
-
-            const renderRoute = () => {
-                switch (route) {
-                    case 'home': return <Home setRoute={setRoute} navigateToShop={navigateToShop} setProductId={setProductId} />;
-                    case 'shop': return <Shop setRoute={setRoute} setProductId={setProductId} shopFilters={shopFilters} />;
-                    case 'product': return <ProductDetail productId={productId} setRoute={setRoute} />;
-                    case 'cart': return <Cart setRoute={setRoute} />;
-                    case 'checkout': return <Checkout setRoute={setRoute} setLastOrder={setLastOrder} />;
-                    case 'success': return <OrderSuccess order={lastOrder} setRoute={setRoute} />;
-                    case 'login': return <Login setRoute={setRoute} />;
-                    case 'admin': return <AdminDashboard />;
-                    default: return <Home setRoute={setRoute} navigateToShop={navigateToShop} setProductId={setProductId} />;
-                }
-            };
-
-            return (
-                <ToastProvider>
-                    <ConfigProvider>
-                        <AuthProvider>
-                            <CartProvider>
-                                <Navbar setRoute={setRoute} currentRoute={route} />
-                                {renderRoute()}
-                                <Footer setRoute={setRoute} />
-                            </CartProvider>
-                        </AuthProvider>
-                    </ConfigProvider>
-                </ToastProvider>
-            );
+            return <h1 style={{ textAlign: 'center', marginTop: '100px', fontSize: '48px' }}>Test React : OK</h1>;
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
