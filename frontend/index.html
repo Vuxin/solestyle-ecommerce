@@ -75,6 +75,7 @@
             max-width: 100vw;
             margin: 0;
             padding: 0;
+            padding-top: 80px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -3434,7 +3435,7 @@
                         </div>
                     </div>
 
-                    <div className="sticky top-3 z-[100] mx-4 md:mx-auto max-w-7xl mt-3 transition-all duration-300">
+                    <div style={{ position: 'fixed', top: '12px', left: '50%', transform: 'translateX(-50%)', width: 'calc(100% - 32px)', maxWidth: '1280px', zIndex: 1000 }}>
                         <nav className="navbar-animated-box w-full backdrop-blur-xl">
                             <div className="navbar-border-container">
                                 <span className="nav-border-line"></span>
