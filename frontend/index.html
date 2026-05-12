@@ -1761,12 +1761,13 @@
             z-index: 2;
         }
 
-        /* Animated Navbar Border (Adapted from User request) */
         .navbar-animated-box {
             position: relative;
-            background-color: rgba(255, 255, 255, 0.85);
-            border-radius: 12px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
         }
 
         .navbar-border-container {
@@ -3433,7 +3434,7 @@
                         </div>
                     </div>
 
-                    <div className="relative z-[100] mx-4 md:mx-auto max-w-7xl mt-3 transition-all duration-300">
+                    <div className="sticky top-3 z-[100] mx-4 md:mx-auto max-w-7xl mt-3 transition-all duration-300">
                         <nav className="navbar-animated-box w-full backdrop-blur-xl">
                             <div className="navbar-border-container">
                                 <span className="nav-border-line"></span>
