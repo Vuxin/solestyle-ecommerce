@@ -18,6 +18,21 @@ router.get("/admin/all", protect, admin, async (req, res) => {
   }
 });
 
+// @route   GET /api/reviews/featured
+// @desc    Get 8 most recent approved reviews (public, for homepage)
+// @access  Public
+router.get("/featured", async (req, res) => {
+  try {
+    const reviews = await Review.find({ isApproved: true })
+      .populate("product", "name images")
+      .sort("-createdAt")
+      .limit(8);
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // @route   GET /api/reviews/:productId
 // @desc    Get approved reviews for a product
 // @access  Public

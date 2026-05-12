@@ -200,6 +200,25 @@ router.get("/admin", protect, admin, async (req, res) => {
   }
 });
 
+// GET /api/orders/track/:ref — suivi de commande PUBLIC (par orderNumber)
+router.get("/track/:ref", async (req, res) => {
+  try {
+    const ref = req.params.ref.trim().toUpperCase();
+    let order = await Order.findOne({ orderNumber: ref })
+      .select('orderNumber orderStatus customerInfo shippingAddress items subtotal shippingCost total createdAt paymentMethod');
+    if (!order) {
+      try {
+        order = await Order.findById(req.params.ref)
+          .select('orderNumber orderStatus customerInfo shippingAddress items subtotal shippingCost total createdAt paymentMethod');
+      } catch (e) {}
+    }
+    if (!order) return res.status(404).json({ message: 'Commande introuvable. Vérifiez votre numéro de commande.' });
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // GET /api/orders/:id
 router.get("/:id", protect, async (req, res) => {
   try {

@@ -3614,6 +3614,7 @@
                             <h4 style={{ color: 'white', marginBottom: '20px' }}>Liens Rapides</h4>
                             <ul style={{ listStyle: 'none', color: '#aaa', fontSize: '14px', lineHeight: 2 }}>
                                 <li><a href="#" style={{ color: '#aaa', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); setRoute('shop'); }}>Boutique</a></li>
+                                <li><a href="#" style={{ color: '#aaa', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); setRoute('tracking'); }}>Suivi de commande</a></li>
                                 <li><a href="#" style={{ color: '#aaa', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert("Page bientôt disponible !"); }}>À propos</a></li>
                                 <li><a href="#" style={{ color: '#aaa', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert("Page bientôt disponible !"); }}>Contact</a></li>
                                 <li><a href="#" style={{ color: '#aaa', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert("FAQ bientôt disponible !"); }}>FAQ</a></li>
@@ -3670,6 +3671,11 @@
                 <div className="product-card" onClick={handleClick} style={{ cursor: 'pointer' }}>
                     <div className="image-wrapper" style={{ overflow: 'hidden' }}>
                         {product.badge && <div className="product-badge" style={{ zIndex: 5 }}>{product.badge}</div>}
+                        {product.stock > 0 && product.stock <= 5 && (
+                            <div style={{ position: 'absolute', bottom: '10px', left: '10px', zIndex: 6, background: 'linear-gradient(135deg,#dc2626,#b91c1c)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px', boxShadow: '0 2px 8px rgba(220,38,38,0.4)' }}>
+                                🔥 Plus que {product.stock} restant{product.stock > 1 ? 's' : ''}
+                            </div>
+                        )}
 
                         {(safeImages.length > 0 ? safeImages : ['https://via.placeholder.com/300x400']).map((img, idx) => (
                             <img
@@ -3877,6 +3883,48 @@
                             </div>
                         </div>
                     </section>
+
+                    <section style={{ background: 'linear-gradient(135deg,#f9f7f4 0%,#fdf8f0 100%)', padding: '80px 0' }}>
+                        <div className="container">
+                            <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+                                <div style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '3px', color: '#c9a96e', textTransform: 'uppercase', marginBottom: '12px' }}>Ce que disent nos clients</div>
+                                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '42px', fontWeight: '900' }}>Avis Vérifiés ★</h2>
+                            </div>
+                            <HomeReviews />
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
+        const HomeReviews = () => {
+            const [reviews, setReviews] = useState([]);
+            useEffect(() => {
+                axios.get(`${API_URL}/reviews/featured`).then(res => setReviews(res.data)).catch(() => {});
+            }, []);
+            if (reviews.length === 0) return null;
+            return (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                    {reviews.map(rev => (
+                        <div key={rev._id} style={{ background: 'white', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', transition: 'transform 0.2s ease, box-shadow 0.2s ease' }}
+                            onMouseEnter={e => { e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.06)'; }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+                                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'linear-gradient(135deg,#c9a96e,#b8922d)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '800', fontSize: '18px', flexShrink: 0 }}>
+                                    {rev.userName?.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div style={{ fontWeight: '700', fontSize: '14px' }}>{rev.userName}</div>
+                                    <div style={{ color: '#c9a96e', fontSize: '13px' }}>
+                                        {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
+                                    </div>
+                                </div>
+                                <div style={{ marginLeft: 'auto', background: '#f0fdf4', color: '#16a34a', padding: '3px 8px', borderRadius: '20px', fontSize: '10px', fontWeight: '700' }}>✔ Vérifié</div>
+                            </div>
+                            <p style={{ color: '#444', fontSize: '14px', lineHeight: 1.6, margin: 0 }}>&#8220;{rev.comment}&#8221;</p>
+                            {rev.product && <div style={{ marginTop: '12px', fontSize: '11px', color: '#aaa', borderTop: '1px solid #f5f5f5', paddingTop: '10px' }}>Acheté : {rev.product.name}</div>}
+                        </div>
+                    ))}
                 </div>
             );
         };
@@ -3903,8 +3951,9 @@
             const [products, setProducts] = useState([]);
             const [categories, setCategories] = useState([]);
             const [loading, setLoading] = useState(true);
-            const [filters, setFilters] = useState(initialFilters || { category: '', search: '', brand: 'all' });
+            const [filters, setFilters] = useState(initialFilters || { category: '', search: '', brand: 'all', priceMin: '', priceMax: '' });
             const [filtersOpen, setFiltersOpen] = useState(false);
+            const [pricePresets] = useState([{ label: '< 300 DH', min: 0, max: 299 }, { label: '300 - 500 DH', min: 300, max: 500 }, { label: '500 - 800 DH', min: 500, max: 800 }, { label: '> 800 DH', min: 801, max: 99999 }]);
             const brands = ["Nike", "Adidas", "New Balance", "Asics", "Saucony", "Jordan", "Puma", "Converse", "Vans", "On"];
 
             useEffect(() => {
@@ -3933,7 +3982,12 @@
                 setFilters({ ...filters, category: catId, brand: 'all' });
             };
 
-            const filteredProducts = products.filter(p => filters.brand === 'all' || p.brand === filters.brand);
+            const filteredProducts = products.filter(p => {
+                if (filters.brand !== 'all' && p.brand !== filters.brand) return false;
+                if (filters.priceMin !== '' && p.price < Number(filters.priceMin)) return false;
+                if (filters.priceMax !== '' && p.price > Number(filters.priceMax)) return false;
+                return true;
+            });
 
             return (
                 <>
@@ -4008,6 +4062,25 @@
                                                 {c.name}
                                             </div>
                                         ))}
+                                    </div>
+                                </div>
+                                <div className="filter-group">
+                                    <div className="filters-title">Prix (DH)</div>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                                        {pricePresets.map(p => (
+                                            <button key={p.label}
+                                                onClick={() => setFilters({ ...filters, priceMin: p.min === 0 ? '' : String(p.min), priceMax: p.max === 99999 ? '' : String(p.max) })}
+                                                style={{ padding: '5px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', border: '1.5px solid', borderColor: (String(filters.priceMin) === String(p.min === 0 ? '' : p.min) && String(filters.priceMax) === String(p.max === 99999 ? '' : p.max)) ? 'var(--accent)' : '#ddd', background: (String(filters.priceMin) === String(p.min === 0 ? '' : p.min) && String(filters.priceMax) === String(p.max === 99999 ? '' : p.max)) ? 'var(--accent)' : 'white', color: (String(filters.priceMin) === String(p.min === 0 ? '' : p.min) && String(filters.priceMax) === String(p.max === 99999 ? '' : p.max)) ? 'white' : '#333' }}>
+                                                {p.label}
+                                            </button>
+                                        ))}
+                                        {(filters.priceMin || filters.priceMax) && <button onClick={() => setFilters({ ...filters, priceMin: '', priceMax: '' })} style={{ padding: '5px 10px', borderRadius: '20px', fontSize: '12px', background: '#f5f5f5', border: 'none', cursor: 'pointer', color: '#666' }}>✕ Reset</button>}
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                        <input type="number" placeholder="Min" value={filters.priceMin} onChange={e => setFilters({ ...filters, priceMin: e.target.value })} style={{ width: '80px', padding: '8px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '13px' }} />
+                                        <span style={{ color: '#aaa' }}>—</span>
+                                        <input type="number" placeholder="Max" value={filters.priceMax} onChange={e => setFilters({ ...filters, priceMax: e.target.value })} style={{ width: '80px', padding: '8px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '13px' }} />
+                                        <span style={{ fontSize: '12px', color: '#888' }}>DH</span>
                                     </div>
                                 </div>
                             </aside>
@@ -5597,6 +5670,104 @@
             );
         };
 
+        const OrderTracking = ({ setRoute }) => {
+            const [orderRef, setOrderRef] = useState('');
+            const [order, setOrder] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+
+            const statusSteps = ['pending', 'confirmed', 'shipped', 'delivered'];
+            const statusLabels = { pending: 'En attente', confirmed: 'Confirmée', shipped: 'En livraison', delivered: 'Livrée', cancelled: 'Annulée' };
+            const statusIcons = { pending: '🕐', confirmed: '✅', shipped: '🚚', delivered: '🎉', cancelled: '❌' };
+            const statusColors = { pending: '#f59e0b', confirmed: '#3b82f6', shipped: '#8b5cf6', delivered: '#22c55e', cancelled: '#ef4444' };
+
+            const handleSearch = async (e) => {
+                e.preventDefault();
+                if (!orderRef.trim()) return;
+                setLoading(true); setError(''); setOrder(null);
+                try {
+                    const res = await axios.get(`${API_URL}/orders/track/${orderRef.trim()}`);
+                    setOrder(res.data);
+                } catch (err) {
+                    setError(err.response?.data?.message || 'Commande introuvable.');
+                } finally { setLoading(false); }
+            };
+
+            const currentStep = order ? statusSteps.indexOf(order.orderStatus) : -1;
+
+            return (
+                <div className="container page-enter" style={{ maxWidth: '700px', padding: '60px 20px', margin: '0 auto' }}>
+                    <button onClick={() => setRoute('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px' }}>← Retour</button>
+                    <h1 className="display-text mb-2" style={{ fontSize: '36px' }}>📦 Suivi de Commande</h1>
+                    <p style={{ color: '#666', marginBottom: '40px', fontSize: '15px' }}>Entrez votre numéro de commande pour suivre votre livraison.</p>
+
+                    <form onSubmit={handleSearch} style={{ display: 'flex', gap: '12px', marginBottom: '40px' }}>
+                        <input type="text" value={orderRef} onChange={e => setOrderRef(e.target.value)}
+                            placeholder="Ex: SS-2025-00001"
+                            style={{ flex: 1, padding: '14px 18px', borderRadius: '12px', border: '2px solid #eee', fontSize: '15px', outline: 'none', fontFamily: 'monospace' }} />
+                        <button type="submit" className="btn btn-primary" disabled={loading} style={{ padding: '14px 24px', whiteSpace: 'nowrap' }}>
+                            {loading ? '...' : '🔍 Rechercher'}
+                        </button>
+                    </form>
+
+                    {error && <div style={{ background: '#fef2f2', color: '#dc2626', padding: '16px 20px', borderRadius: '12px', marginBottom: '24px', fontWeight: '500' }}>⚠️ {error}</div>}
+
+                    {order && (
+                        <div>
+                            <div style={{ background: 'white', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                                    <div>
+                                        <div style={{ fontSize: '12px', color: '#aaa', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Commande</div>
+                                        <div style={{ fontFamily: 'monospace', fontWeight: '800', fontSize: '20px', marginTop: '4px' }}>#{order.orderNumber}</div>
+                                    </div>
+                                    <div style={{ background: statusColors[order.orderStatus] + '20', color: statusColors[order.orderStatus], padding: '8px 16px', borderRadius: '20px', fontWeight: '700', fontSize: '13px' }}>
+                                        {statusIcons[order.orderStatus]} {statusLabels[order.orderStatus]}
+                                    </div>
+                                </div>
+
+                                {order.orderStatus !== 'cancelled' && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '28px' }}>
+                                        {statusSteps.map((step, i) => (
+                                            <React.Fragment key={step}>
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flex: 1 }}>
+                                                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', background: i <= currentStep ? 'var(--accent)' : '#f0f0f0', transition: 'all 0.3s' }}>{statusIcons[step]}</div>
+                                                    <div style={{ fontSize: '10px', fontWeight: '600', color: i <= currentStep ? 'var(--accent)' : '#aaa', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{statusLabels[step]}</div>
+                                                </div>
+                                                {i < statusSteps.length - 1 && <div style={{ height: '2px', flex: 1, background: i < currentStep ? 'var(--accent)' : '#f0f0f0', transition: 'background 0.3s', marginBottom: '22px' }}></div>}
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '14px', color: '#666', paddingTop: '16px', borderTop: '1px solid #f5f5f5' }}>
+                                    <div><strong>Client :</strong> {order.customerInfo?.firstName} {order.customerInfo?.lastName}</div>
+                                    <div><strong>Tél :</strong> {order.customerInfo?.phone}</div>
+                                    <div><strong>Adresse :</strong> {order.shippingAddress?.address}, {order.shippingAddress?.city}</div>
+                                    <div><strong>Date :</strong> {new Date(order.createdAt).toLocaleDateString('fr-FR')}</div>
+                                    <div><strong>Paiement :</strong> {order.paymentMethod === 'livraison' ? 'À la livraison' : order.paymentMethod}</div>
+                                    <div><strong>Total :</strong> <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{order.total} DH</span></div>
+                                </div>
+                            </div>
+
+                            <div style={{ background: 'white', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+                                <h3 style={{ fontFamily: 'var(--font-display)', marginBottom: '16px' }}>Articles commandés</h3>
+                                {order.items?.map((item, i) => (
+                                    <div key={i} style={{ display: 'flex', gap: '16px', padding: '12px 0', borderBottom: i < order.items.length - 1 ? '1px solid #f5f5f5' : 'none' }}>
+                                        <img src={item.image || 'https://via.placeholder.com/60'} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }} />
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontWeight: '600' }}>{item.name}</div>
+                                            <div style={{ fontSize: '13px', color: '#888' }}>Taille {item.size} • x{item.quantity}</div>
+                                        </div>
+                                        <div style={{ fontWeight: '700' }}>{item.price * item.quantity} DH</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         const App = () => {
             const [route, setRoute] = useState('home');
             const [productId, setProductId] = useState(null);
@@ -5617,6 +5788,7 @@
                     case 'checkout': return <Checkout setRoute={setRoute} setLastOrder={setLastOrder} />;
                     case 'success': return <OrderSuccess order={lastOrder} setRoute={setRoute} />;
                     case 'login': return <Login setRoute={setRoute} />;
+                    case 'tracking': return <OrderTracking setRoute={setRoute} />;
                     case 'admin': return <AdminDashboard />;
                     default: return <Home setRoute={setRoute} navigateToShop={navigateToShop} setProductId={setProductId} />;
                 }
