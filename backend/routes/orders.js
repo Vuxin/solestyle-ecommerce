@@ -233,7 +233,7 @@ router.put("/:id/status", protect, admin, async (req, res) => {
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       { orderStatus },
-      { new: true }
+      { returnDocument: 'after' }
     );
     if (!order) return res.status(404).json({ message: "Commande introuvable" });
     res.json(order);

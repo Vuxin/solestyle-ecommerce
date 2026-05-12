@@ -87,7 +87,7 @@ router.post("/", protect, admin, async (req, res) => {
 router.put("/:id", protect, admin, async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true,
     });
     if (!product)
@@ -104,7 +104,7 @@ router.delete("/:id", protect, admin, async (req, res) => {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       { isActive: false },
-      { new: true }
+      { returnDocument: 'after' }
     );
     if (!product)
       return res.status(404).json({ message: "Produit introuvable" });

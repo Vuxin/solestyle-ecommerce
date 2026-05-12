@@ -3097,37 +3097,6 @@
         const CartContext = createContext();
         const ConfigContext = createContext();
 
-        const ConfigProvider = ({ children }) => {
-            const [siteConfig, setSiteConfig] = useState({
-                whatsapp: '212699211666',
-                instagram: 'solestyle.ma',
-                email: 'contact@solestyle.ma',
-                footerText: 'SoleStyle — La référence du sneakers premium au Maroc.',
-                address: 'Casablanca, Maroc'
-            });
-
-            const fetchSiteConfig = async () => {
-                try {
-                    const res = await axios.get(`${API_URL}/settings`);
-                    if (res.data && Object.keys(res.data).length > 0) {
-                        setSiteConfig(prev => ({ ...prev, ...res.data }));
-                    }
-                } catch (e) { console.error("Erreur config:", e); }
-            };
-
-            const updateSiteConfig = (newConfig) => {
-                setSiteConfig(prev => ({ ...prev, ...newConfig }));
-            };
-
-            useEffect(() => { fetchSiteConfig(); }, []);
-
-            return (
-                <ConfigContext.Provider value={{ siteConfig, updateSiteConfig, fetchSiteConfig }}>
-                    {children}
-                </ConfigContext.Provider>
-            );
-        };
-
         const ToastProvider = ({ children }) => {
             const [toasts, setToasts] = useState([]);
             const addToast = (message, type = 'info') => {
@@ -5485,6 +5454,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
                         )}
                     </div>
                 </div>

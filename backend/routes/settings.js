@@ -25,7 +25,7 @@ router.post('/', protect, admin, async (req, res) => {
             await Setting.findOneAndUpdate(
                 { key },
                 { key, value },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
         res.json({ message: "Paramètres mis à jour !" });

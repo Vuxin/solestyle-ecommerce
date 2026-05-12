@@ -118,7 +118,7 @@ async function createAdmins() {
     await User.findOneAndUpdate(
       { email: a.email },
       { name: a.name, email: a.email, password: hashed, role: "admin" },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
     );
     console.log(`✅ Admin ready: ${a.email}`);
   }
