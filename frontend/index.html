@@ -5060,11 +5060,11 @@
                             <li className={activeTab === 'config' ? 'active' : ''} onClick={() => setActiveTab('config')}>⚙️ Configuration</li>
                         </ul>
                     </aside>
-                    <div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
                         {activeTab === 'stats' && stats && (
                             <div className="page-enter">
                                 <h1 className="display-text mb-8">Tableau de Bord Analytics</h1>
-                                <div className="grid mb-12" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+                                <div className="grid mb-12" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                                     <div className="cart-summary" style={{ padding: '20px', textAlign: 'center' }}>
                                         <div style={{ fontSize: '14px', color: '#666' }}>Chiffre d'Affaires</div>
                                         <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)' }}>{stats.summary.totalRevenue} DH</div>
@@ -5082,7 +5082,7 @@
                                         <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{stats.summary.totalUsers}</div>
                                     </div>
                                 </div>
-                                <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
                                     <div className="cart-summary" style={{ padding: '20px' }}>
                                         <h3 className="mb-4">Répartition des Commandes</h3>
                                         <div style={{ height: '300px' }}><canvas id="statusChart"></canvas></div>
@@ -5102,7 +5102,7 @@
                             </div>
                         )}
                         {activeTab === 'config' && (
-                            <div style={{ background: 'white', padding: '30px', borderRadius: '15px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                            <div className="page-enter" style={{ background: 'white', padding: '30px', borderRadius: '15px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                                 <h3 style={{ marginBottom: '25px', fontFamily: 'var(--font-display)', fontSize: '24px' }}>⚙️ Paramètres Généraux</h3>
                                 <form onSubmit={handleSaveConfig} style={{ display: 'grid', gap: '20px' }}>
                                     <div className="form-group">
@@ -5141,7 +5141,7 @@
                                 </div>
                                 {showAddPromo && (
                                     <form onSubmit={handleAddPromo} className="cart-summary mb-8" style={{ padding: '30px' }}>
-                                        <div className="grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px' }}>
+                                        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px' }}>
                                             <div className="form-group"><label>Code</label><input type="text" required value={newPromo.code} onChange={e => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })} /></div>
                                             <div className="form-group">
                                                 <label>Type</label>
@@ -5200,7 +5200,7 @@
                         )}
                         {(activeTab === 'commandes' || activeTab === 'historique') && (
                             !selectedOrder ? (
-                                <>
+                                <div className="page-enter">
                                     <h1 className="display-text mb-8">{activeTab === 'commandes' ? 'Commandes en cours' : 'Historique des commandes'}</h1>
                                     <div style={{ overflowX: 'auto' }}>
                                         <table className="table">
@@ -5219,7 +5219,7 @@
                                                     <tr key={o._id}>
                                                         <td style={{ fontWeight: 'bold' }}>{o.orderNumber || o._id.substring(18)}</td>
                                                         <td>{new Date(o.createdAt).toLocaleDateString()}</td>
-                                                        <td>{o.customerInfo.firstName} {o.customerInfo.lastName}</td>
+                                                        <td>{o.customerInfo?.firstName} {o.customerInfo?.lastName}</td>
                                                         <td>{o.total} DH</td>
                                                         <td>
                                                             <span style={{ padding: '4px 8px', borderRadius: '12px', fontSize: '12px', background: o.orderStatus === 'pending' ? '#fef08a' : (o.orderStatus === 'delivered' ? '#bbf7d0' : '#e2e8f0'), color: '#333' }}>
@@ -5234,9 +5234,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </>
+                                </div>
                             ) : (
-                                <div>
+                                <div className="page-enter">
                                     <div className="flex justify-between items-center mb-8">
                                         <h1 className="display-text">Commande {selectedOrder.orderNumber || selectedOrder._id.substring(18)}</h1>
                                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -5248,15 +5248,15 @@
                                             <button className="btn btn-outline" onClick={() => setSelectedOrder(null)}>Retour</button>
                                         </div>
                                     </div>
-                                    <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '40px' }}>
+                                    <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '30px', marginBottom: '40px' }}>
                                         <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '8px' }}>
                                             <h3 className="mb-4">Informations Client</h3>
-                                            <p><strong>Nom:</strong> {selectedOrder.customerInfo.firstName} {selectedOrder.customerInfo.lastName}</p>
-                                            <p><strong>Email:</strong> {selectedOrder.customerInfo.email}</p>
-                                            <p><strong>Téléphone:</strong> {selectedOrder.customerInfo.phone}</p>
+                                            <p><strong>Nom:</strong> {selectedOrder.customerInfo?.firstName} {selectedOrder.customerInfo?.lastName}</p>
+                                            <p><strong>Email:</strong> {selectedOrder.customerInfo?.email}</p>
+                                            <p><strong>Téléphone:</strong> {selectedOrder.customerInfo?.phone}</p>
                                             <p className="mt-4"><strong>Adresse Livraison:</strong></p>
-                                            <p>{selectedOrder.shippingAddress.address}</p>
-                                            <p>{selectedOrder.shippingAddress.zipCode} {selectedOrder.shippingAddress.city}</p>
+                                            <p>{selectedOrder.shippingAddress?.address}</p>
+                                            <p>{selectedOrder.shippingAddress?.zipCode} {selectedOrder.shippingAddress?.city}</p>
                                             <p className="mt-4"><strong>Note:</strong> {selectedOrder.notes || "Aucune"}</p>
                                         </div>
                                         <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '8px' }}>
@@ -5269,7 +5269,7 @@
                                         </div>
                                     </div>
                                     <h3 className="mb-4">Articles Commandés</h3>
-                                    <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
+                                    <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '8px', overflowX: 'auto' }}>
                                         <table className="table" style={{ marginBottom: 0 }}>
                                             <thead>
                                                 <tr>
@@ -5321,7 +5321,7 @@
                             </div>
                         )}
                         {activeTab === 'produits' && (
-                            <>
+                            <div className="page-enter">
                                 <div className="flex justify-between items-center mb-8">
                                     <h1 className="display-text">Catalogue Produits</h1>
                                     <button className="btn btn-primary" onClick={() => {
@@ -5341,7 +5341,7 @@
                                     <div style={{ background: '#f9f9f9', padding: '30px', marginBottom: '40px', borderRadius: '8px' }}>
                                         <h3 className="mb-4">{isEditing ? 'Modifier le produit' : 'Ajouter un produit'}</h3>
                                         <form onSubmit={handleSubmitProduct}>
-                                            <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                                                 <div className="form-group">
                                                     <label>Nom du produit</label>
                                                     <input type="text" value={newProd.name} onChange={e => setNewProd({ ...newProd, name: e.target.value })} required />
@@ -5351,7 +5351,7 @@
                                                     <input type="number" value={newProd.price} onChange={e => setNewProd({ ...newProd, price: e.target.value })} required />
                                                 </div>
                                             </div>
-                                            <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                                                 <div className="form-group">
                                                     <label>Catégorie</label>
                                                     <select value={newProd.category} onChange={e => setNewProd({ ...newProd, category: e.target.value })} required>
@@ -5368,7 +5368,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                                                 <div className="form-group">
                                                     <label>Quantité en Stock</label>
                                                     <input type="number" value={newProd.stock} onChange={e => setNewProd({ ...newProd, stock: e.target.value })} />
@@ -5430,7 +5430,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </>
+                            </div>
                         )}
                         {activeTab === 'marques' && (
                             <div className="page-enter">
@@ -5467,7 +5467,7 @@
                             </div>
                         )}
                         {activeTab === 'clients' && (
-                            <>
+                            <div className="page-enter">
                                 <h1 className="display-text mb-8">Liste des Clients</h1>
                                 <div style={{ overflowX: 'auto' }}>
                                     <table className="table">
@@ -5485,12 +5485,12 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </>
+                            </div>
                         )}
                     </div>
                 </div>
-                );
-        }
+            );
+        };
 
         const TrendingCarousel = ({products = [], setProductId, setRoute}) => {
             useEffect(() => {
