@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Cinzel:wght@400;600;700&family=Josefin+Sans:wght@300;400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Cinzel:wght@400;600;700&family=Josefin+Sans:wght@300;400;600;700&family=Bebas+Neue&display=swap"
         rel="stylesheet">
 
     <!-- Swiper -->
@@ -1653,12 +1653,13 @@
         }
 
         .split-card-title {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-family: 'Bebas Neue', 'Cormorant Garamond', serif;
+            font-size: 3.2rem;
+            font-weight: 400;
             text-transform: uppercase;
             margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
         }
 
         /* Navbar Custom Button */
@@ -3786,10 +3787,11 @@
                                 </div>
                             </div>
                             <div className="split-card" onClick={() => navigateToShop({ category: femmeCatId, brand: 'all' })}>
-                                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=1000" alt="Femme" />
+                                <img src="https://solestyle-ecommerce-production.up.railway.app/uploads/sneakers_femme_flatlay.jpg" alt="Femme"
+                                     onError={(e) => { e.target.src='https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=1000'; }} />
                                 <div className="split-card-content">
                                     <h3 className="split-card-title">SNEAKERS FEMME</h3>
-                                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 'bold', borderBottom: '2px solid white', paddingBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px' }}>Découvrir</span>
+                                    <span style={{ fontFamily: 'Bebas Neue, serif', fontSize: '16px', fontWeight: '400', borderBottom: '2px solid white', paddingBottom: '5px', textTransform: 'uppercase', letterSpacing: '3px' }}>Découvrir</span>
                                 </div>
                             </div>
                         </div>
