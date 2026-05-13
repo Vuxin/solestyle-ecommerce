@@ -2675,17 +2675,36 @@
             background: rgb(253, 243, 234);
             background: linear-gradient(163deg, rgba(253, 243, 234, 1) 0%, rgba(251, 229, 204, 1) 100%);
             will-change: transform;
+            overflow: hidden;
         }
 
-        .co-card--style-1 {}
-        .co-card--style-2 {}
-        .co-card--style-3 {}
+        .co-card--style-1 {
+            background: rgb(247, 253, 252);
+            background: linear-gradient(163deg, rgba(247, 253, 252, 1) 0%, rgba(195, 227, 221, 1) 100%);
+        }
+
+        .co-card--style-2 {
+            background: rgb(252, 244, 244);
+            background: linear-gradient(163deg, rgba(252, 244, 244, 1) 0%, rgba(246, 200, 203, 1) 100%);
+        }
+
+        .co-card--style-3 {
+            background: rgb(249, 242, 251);
+            background: linear-gradient(163deg, rgba(249, 242, 251, 1) 0%, rgba(234, 199, 245, 1) 100%);
+        }
 
         .co-card__shoe {
             position: relative;
-            width: 140%;
+            width: 100%;
+            padding: 0 10px;
             flex-shrink: 0;
-            top: -40px;
+            top: -30px;
+        }
+
+        @keyframes floatShoe {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0); }
         }
 
         .co-card__shoe-img {
@@ -2697,6 +2716,7 @@
             will-change: transform;
             pointer-events: none;
             mix-blend-mode: multiply;
+            animation: floatShoe 3s ease-in-out infinite;
         }
 
         .co-card__shoe-shadow {
@@ -5622,9 +5642,9 @@
                                 const progress = slide.progress;
                                 if (progress >= -1 && progress <= 1) {
                                     slide.querySelector(".co-card").style.transform = `scale(${1 - Math.abs(progress) * 0.2})`;
-                                    const shoeImg = slide.querySelector(".co-card__shoe-img");
-                                    if (shoeImg) {
-                                        shoeImg.style.transform = `rotate(${progress * -25}deg) translateY(${Math.abs(progress) * -15}px)`;
+                                    const shoeContainer = slide.querySelector(".co-card__shoe");
+                                    if (shoeContainer) {
+                                        shoeContainer.style.transform = `rotate(${progress * -25}deg) translateY(${Math.abs(progress) * -15}px)`;
                                     }
                                 }
                             });
