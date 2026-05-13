@@ -1,17 +1,24 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { protect, admin } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Créer le dossier s'il n'existe pas
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Configuration du stockage de Multer
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        cb(null, 'uploads/'); // Le dossier où les images seront sauvegardées
+        cb(null, uploadDir); // Le dossier où les images seront sauvegardées
     },
     filename(req, file, cb) {
-        // Renommer le fichier pour éviter les conflits (ex: nomdufichier-1683949.jpg)
+        // Renommer le fichier pour éviter les conflits
         cb(
             null,
             `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
@@ -43,8 +50,8 @@ const upload = multer({
 // @route   POST /api/upload
 // @access  Privé/Admin
 router.post('/', protect, admin, upload.array('images', 5), (req, res) => {
-    // req.files est fourni par multer. On renvoie un tableau de chemins.
-    const filePaths = req.files.map(f => `/${f.path.replace(/\\/g, '/').replace(/^uploads\//, 'uploads/')}`);
+    // req.files est fourni par multer.
+    const filePaths = req.files.map(f => `/uploads/${f.filename}`);
     res.json(filePaths); 
 });
 
