@@ -5800,7 +5800,9 @@
                         <AuthProvider>
                             <CartProvider>
                                 <Navbar setRoute={setRoute} currentRoute={route} navigateToShop={navigateToShop} setProductId={setProductId} />
+                                <Ticker />
                                 {renderRoute()}
+                                <SideCart setRoute={setRoute} />
                                 <Footer setRoute={setRoute} />
                                 <WhatsAppButton />
                             </CartProvider>
