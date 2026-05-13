@@ -3613,12 +3613,28 @@
 
         const Footer = ({ setRoute }) => {
             const { siteConfig } = useContext(ConfigContext);
+            const [email, setEmail] = useState('');
+            
+            const handleNewsletter = (e) => {
+                e.preventDefault();
+                alert(`Merci pour votre inscription à la newsletter ! (${email})`);
+                setEmail('');
+            };
+
             return (
                 <footer style={{ background: '#0a0a0a', color: 'white', padding: '60px 0', marginTop: 'auto' }}>
                     <div className="container grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px' }}>
                         <div>
                             <h3 style={{ color: 'white', marginBottom: '20px', fontSize: '24px' }}>JbShoes</h3>
                             <p style={{ color: '#aaa', fontSize: '14px', lineHeight: 1.6 }}>{siteConfig.footerText}</p>
+                            
+                            <div style={{ marginTop: '20px' }}>
+                                <h4 style={{ color: 'white', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Newsletter</h4>
+                                <form onSubmit={handleNewsletter} style={{ display: 'flex', gap: '8px' }}>
+                                    <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="Votre email..." style={{ padding: '8px 12px', borderRadius: '6px', border: 'none', outline: 'none', fontSize: '13px', flex: 1, color: '#333' }} />
+                                    <button type="submit" style={{ padding: '8px 12px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold', textTransform: 'uppercase' }}>S'inscrire</button>
+                                </form>
+                            </div>
                         </div>
                         <div>
                             <h4 style={{ color: 'white', marginBottom: '20px' }}>Liens Rapides</h4>
@@ -3642,9 +3658,11 @@
                             <h4 style={{ color: 'white', marginBottom: '20px' }}>Contact</h4>
                             <p style={{ color: '#aaa', fontSize: '14px', lineHeight: 2 }}>
                                 📱 TikTok: <a href={`https://www.tiktok.com/@${siteConfig.tiktok}`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>@{siteConfig.tiktok}</a><br />
-                                Email: <a href={`mailto:${siteConfig.email}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.email}</a><br />
-                                Tél: <a href={`tel:+${siteConfig.whatsapp}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.whatsapp.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4')}</a><br />
-                                {siteConfig.address}
+                                📸 Instagram: <a href={`https://www.instagram.com/solestyle.ma`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>@solestyle.ma</a><br />
+                                📘 Facebook: <a href={`https://www.facebook.com/solestyle.ma`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>SoleStyle Maroc</a><br />
+                                📧 Email: <a href={`mailto:${siteConfig.email}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.email}</a><br />
+                                📞 Tél: <a href={`tel:+${siteConfig.whatsapp}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.whatsapp.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4')}</a><br />
+                                📍 {siteConfig.address || 'Casablanca, Maroc'}
                             </p>
                         </div>
                     </div>
@@ -3957,11 +3975,11 @@
             </button>
         );
 
-        const Shop = ({ setRoute, setProductId, initialFilters }) => {
+        const Shop = ({ setRoute, setProductId, shopFilters }) => {
             const [products, setProducts] = useState([]);
             const [categories, setCategories] = useState([]);
             const [loading, setLoading] = useState(true);
-            const [filters, setFilters] = useState(initialFilters || { category: '', search: '', brand: 'all', priceMin: '', priceMax: '' });
+            const [filters, setFilters] = useState(shopFilters || { category: '', search: '', brand: 'all', priceMin: '', priceMax: '' });
             const [filtersOpen, setFiltersOpen] = useState(false);
             const [pricePresets] = useState([{ label: '< 300 DH', min: 0, max: 299 }, { label: '300 - 500 DH', min: 300, max: 500 }, { label: '500 - 800 DH', min: 500, max: 800 }, { label: '> 800 DH', min: 801, max: 99999 }]);
             const brands = ["Nike", "Adidas", "New Balance", "Asics", "Saucony", "Jordan", "Puma", "Converse", "Vans", "On"];
@@ -3969,6 +3987,12 @@
             useEffect(() => {
                 axios.get(`${API_URL}/categories`).then(res => setCategories(res.data));
             }, []);
+
+            useEffect(() => {
+                if (shopFilters) {
+                    setFilters(prev => ({ ...prev, ...shopFilters }));
+                }
+            }, [shopFilters]);
 
             useEffect(() => {
                 setLoading(true);
@@ -3981,12 +4005,6 @@
                     .catch(e => console.error(e))
                     .finally(() => setLoading(false));
             }, [filters.category, filters.search]);
-
-            const isSneakersCategory = () => {
-                if (!filters.category) return false;
-                const currentCat = categories.find(c => c._id === filters.category);
-                return currentCat && currentCat.name.toLowerCase().includes('sneakers');
-            };
 
             const handleCategoryChange = (catId) => {
                 setFilters({ ...filters, category: catId, brand: 'all' });
@@ -4093,6 +4111,23 @@
                                         <span style={{ fontSize: '12px', color: '#888' }}>DH</span>
                                     </div>
                                 </div>
+                                <div className="filter-group">
+                                    <div className="filters-title">Marques</div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <div className={`cat-item ${filters.brand === 'all' ? 'active' : ''}`} onClick={() => setFilters({ ...filters, brand: 'all' })}>
+                                            <span className="cat-emoji">👟</span> Toutes
+                                        </div>
+                                        {brands.map(brand => {
+                                            const count = products.filter(p => p.brand === brand).length;
+                                            if (count === 0) return null;
+                                            return (
+                                                <div key={brand} className={`cat-item ${filters.brand === brand ? 'active' : ''}`} onClick={() => setFilters({ ...filters, brand: brand })}>
+                                                    <span className="cat-emoji">✨</span> {brand} <span style={{ fontSize: '10px', opacity: 0.7, marginLeft: 'auto' }}>({count})</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </aside>
 
                             <div className="shop-main">
@@ -4109,30 +4144,6 @@
                                         <small>Produits</small>
                                     </div>
                                 </div>
-
-                                {isSneakersCategory() && (
-                                    <div className="brands-container">
-                                        <StarBadge
-                                            active={filters.brand === 'all'}
-                                            onClick={() => setFilters({ ...filters, brand: 'all' })}
-                                        >
-                                            Toutes les marques
-                                        </StarBadge>
-                                        {brands.map(brand => {
-                                            const count = products.filter(p => p.brand === brand).length;
-                                            if (count === 0) return null;
-                                            return (
-                                                <StarBadge
-                                                    key={brand}
-                                                    active={filters.brand === brand}
-                                                    onClick={() => setFilters({ ...filters, brand: brand })}
-                                                >
-                                                    {brand} <span style={{ fontSize: '10px', opacity: 0.7 }}>({count})</span>
-                                                </StarBadge>
-                                            );
-                                        })}
-                                    </div>
-                                )}
 
                                 <div className="products-grid">
                                     {loading ? (
