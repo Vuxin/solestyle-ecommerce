@@ -5025,7 +5025,8 @@
                     showToast(`${newUrls.length} image(s) importée(s) avec succès !`, 'success');
                 } catch (error) {
                     console.error(error);
-                    showToast("Erreur lors de l'upload des images", 'error');
+                    const errMsg = error.response?.data?.message || "Erreur lors de l'upload des images";
+                    showToast(errMsg, 'error');
                 } finally {
                     setUploading(false);
                 }
