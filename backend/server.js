@@ -110,7 +110,7 @@ const bcrypt = require("bcryptjs");
 async function createAdmins() {
   const User = require("./models/User");
   const admins = [
-    { name: "SoleStyle Admin", email: "admin@jbshoes.ma", password: "admin123" },
+    { name: "JbShoes Admin", email: "admin@jbshoes.ma", password: "admin123" },
     { name: "Mohamed Admin", email: "mohamedjbark35@gmail.com", password: "admin123" },
   ];
   for (const a of admins) {
@@ -205,7 +205,7 @@ async function runSeed(force = false) {
 // This ensures Railway health checks pass even while MongoDB connects
 const PORT = process.env.PORT || 5000;
 const MONGO_URI =
-  process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/solestyle";
+  process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/jbshoes";
 
 console.log("🔧 MONGODB_URI:", process.env.MONGODB_URI ? "SET ✅" : "NOT SET ❌");
 console.log("🔧 MONGO_URI:", process.env.MONGO_URI ? "SET ✅" : "NOT SET ❌");

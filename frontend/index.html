@@ -3194,9 +3194,9 @@
         const ConfigProvider = ({ children }) => {
             const [siteConfig, setSiteConfig] = useState({
                 whatsapp: '212699211666',
-                tiktok: 'solestyle.ma',
-                email: 'contact@solestyle.ma',
-                footerText: 'SoleStyle — La référence du sneakers premium au Maroc.',
+                tiktok: 'jbshoes.ma',
+                email: 'contact@jbshoes.ma',
+                footerText: 'JbShoes — La référence du sneakers premium au Maroc.',
                 address: 'Casablanca, Maroc',
                 whatsappMessage: 'Bonjour, je souhaite commander sur JbShoes 👟'
             });
@@ -3658,8 +3658,8 @@
                             <h4 style={{ color: 'white', marginBottom: '20px' }}>Contact</h4>
                             <p style={{ color: '#aaa', fontSize: '14px', lineHeight: 2 }}>
                                 📱 TikTok: <a href={`https://www.tiktok.com/@${siteConfig.tiktok}`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>@{siteConfig.tiktok}</a><br />
-                                📸 Instagram: <a href={`https://www.instagram.com/solestyle.ma`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>@solestyle.ma</a><br />
-                                📘 Facebook: <a href={`https://www.facebook.com/solestyle.ma`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>SoleStyle Maroc</a><br />
+                                📸 Instagram: <a href={`https://www.instagram.com/jbshoes.ma`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>@jbshoes.ma</a><br />
+                                📘 Facebook: <a href={`https://www.facebook.com/jbshoes.ma`} target="_blank" rel="noopener noreferrer" style={{ color: '#aaa', textDecoration: 'none' }}>JbShoes Maroc</a><br />
                                 📧 Email: <a href={`mailto:${siteConfig.email}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.email}</a><br />
                                 📞 Tél: <a href={`tel:+${siteConfig.whatsapp}`} style={{ color: '#aaa', textDecoration: 'none' }}>{siteConfig.whatsapp.replace(/(\d{2})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4')}</a><br />
                                 📍 {siteConfig.address || 'Casablanca, Maroc'}
@@ -4750,7 +4750,7 @@
             const handleWhatsApp = () => {
                 const phone = siteConfig.whatsapp;
                 const itemsList = order.items.map(i => `- ${i.quantity}x ${i.name} (T.${i.size})`).join('%0A');
-                const message = `Bonjour SoleStyle ! Je viens de passer la commande *${order.orderNumber}*.%0A%0A*Articles :*%0A${itemsList}%0A%0A*Total :* ${order.total.toFixed(2)} DH%0A*Adresse :* ${order.shippingAddress.address}, ${order.shippingAddress.city}%0A%0AMerci !`;
+                const message = `Bonjour JbShoes ! Je viens de passer la commande *${order.orderNumber}*.%0A%0A*Articles :*%0A${itemsList}%0A%0A*Total :* ${order.total.toFixed(2)} DH%0A*Adresse :* ${order.shippingAddress.address}, ${order.shippingAddress.city}%0A%0AMerci !`;
                 window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
             };
 
@@ -4821,7 +4821,7 @@
                                 <img src="${qrUrl}" alt="QR Code">
                             </div>
                             <div class="footer">
-                                Merci de votre confiance ! Retrouvez-nous sur www.solestyle.ma
+                                Merci de votre confiance ! Retrouvez-nous sur www.jbshoes.ma
                             </div>
                         </body>
                     </html>
@@ -4937,7 +4937,7 @@
 
             const DEFAULT_BRANDS = ["Nike", "Jordan", "Adidas", "Puma", "New Balance", "Converse", "Vans", "Asics", "Saucony", "Salomon", "Birkenstock", "Ugg", "Balenciaga", "On", "Prada", "Dior", "Hermes", "Louis Vuitton", "Autre"];
             const [customBrands, setCustomBrands] = useState(() => {
-                try { const stored = localStorage.getItem('solestyle_custom_brands'); return stored ? JSON.parse(stored) : []; } catch { return []; }
+                try { const stored = localStorage.getItem('jbshoes_custom_brands'); return stored ? JSON.parse(stored) : []; } catch { return []; }
             });
             const allBrands = [...DEFAULT_BRANDS, ...customBrands.filter(b => !DEFAULT_BRANDS.includes(b))];
             const [newBrandName, setNewBrandName] = useState('');
@@ -4948,7 +4948,7 @@
                 if (allBrands.includes(name)) return showToast('Cette marque existe déjà !', 'error');
                 const updated = [...customBrands, name];
                 setCustomBrands(updated);
-                localStorage.setItem('solestyle_custom_brands', JSON.stringify(updated));
+                localStorage.setItem('jbshoes_custom_brands', JSON.stringify(updated));
                 setNewBrandName('');
                 showToast(`Marque "${name}" ajoutée avec succès !`, 'success');
             };
@@ -4957,7 +4957,7 @@
                 if (!window.confirm(`Supprimer la marque "${brand}" ?`)) return;
                 const updated = customBrands.filter(b => b !== brand);
                 setCustomBrands(updated);
-                localStorage.setItem('solestyle_custom_brands', JSON.stringify(updated));
+                localStorage.setItem('jbshoes_custom_brands', JSON.stringify(updated));
                 showToast(`Marque "${brand}" supprimée`, 'success');
             };
 
