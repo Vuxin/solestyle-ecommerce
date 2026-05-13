@@ -8,6 +8,7 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     oldPrice: { type: Number },
     brand: { type: String, default: "Autre" },
+    gender: { type: String, enum: ["Homme", "Femme", "Enfant", "Unisexe"], default: "Unisexe" },
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     sizes: [Number],
     images: [String],

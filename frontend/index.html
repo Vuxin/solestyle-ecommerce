@@ -4918,7 +4918,7 @@
             const [showAddProduct, setShowAddProduct] = useState(false);
             const [isEditing, setIsEditing] = useState(false);
             const [editingId, setEditingId] = useState(null);
-            const [newProd, setNewProd] = useState({name: '', price: '', category: '', brand: 'Autre', description: '', sizes: '', stock: '', images: '' });
+            const [newProd, setNewProd] = useState({name: '', price: '', category: '', brand: 'Autre', gender: 'Unisexe', description: '', sizes: '', stock: '', images: '' });
             const [uploading, setUploading] = useState(false);
             const showToast = useContext(ToastContext);
 
@@ -5102,7 +5102,7 @@
                     setShowAddProduct(false);
                     setIsEditing(false);
                     setEditingId(null);
-                    setNewProd({name: '', price: '', category: '', brand: 'Autre', description: '', sizes: '', stock: '', images: '' });
+                    setNewProd({name: '', price: '', category: '', brand: 'Autre', gender: 'Unisexe', description: '', sizes: '', stock: '', images: '' });
                 } catch (err) {
                     alert(err.response?.data?.message || "Erreur lors de l'enregistrement");
                 }
@@ -5116,6 +5116,7 @@
                     price: product.price,
                     category: product.category?._id || '',
                     brand: product.brand || 'Autre',
+                    gender: product.gender || 'Unisexe',
                     description: product.description || '',
                     sizes: product.sizes ? product.sizes.join(', ') : '',
                     stock: product.stock || 0,
@@ -5452,7 +5453,7 @@
                                             setShowAddProduct(false);
                                             setIsEditing(false);
                                             setEditingId(null);
-                                            setNewProd({ name: '', price: '', category: '', brand: 'Autre', description: '', sizes: '', stock: '', images: '' });
+                                            setNewProd({ name: '', price: '', category: '', brand: 'Autre', gender: 'Unisexe', description: '', sizes: '', stock: '', images: '' });
                                         } else {
                                             setShowAddProduct(true);
                                         }
@@ -5488,6 +5489,15 @@
                                                         {allBrands.map(b => (
                                                             <option key={b} value={b}>{b}</option>
                                                         ))}
+                                                    </select>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>Genre</label>
+                                                    <select value={newProd.gender} onChange={e => setNewProd({ ...newProd, gender: e.target.value })}>
+                                                        <option value="Unisexe">Unisexe</option>
+                                                        <option value="Homme">Homme</option>
+                                                        <option value="Femme">Femme</option>
+                                                        <option value="Enfant">Enfant</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -5543,7 +5553,7 @@
                                                     <td style={{ fontWeight: 'bold' }}>{p.name}</td>
                                                     <td>{p.price} DH</td>
                                                     <td>{p.stock}</td>
-                                                    <td>{p.category?.name || 'Inconnue'}</td>
+                                                    <td>{p.category?.name || 'Inconnue'} ({p.gender || 'Unisexe'})</td>
                                                     <td style={{ textAlign: 'right' }}>
                                                         <button className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '12px', marginRight: '5px' }} onClick={() => handleEditClick(p)}>Modifier</button>
                                                         <button className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '12px', borderColor: '#dc2626', color: '#dc2626' }} onClick={() => handleDeleteProduct(p._id)}>Supprimer</button>
