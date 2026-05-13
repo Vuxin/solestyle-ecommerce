@@ -5783,10 +5783,38 @@
         };
 
         const App = () => {
-            const [route, setRoute] = useState('home');
-            const [productId, setProductId] = useState(null);
+            const [route, setRoute] = useState(() => {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('route') || 'home';
+            });
+            const [productId, setProductId] = useState(() => {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('pid') || null;
+            });
             const [lastOrder, setLastOrder] = useState(null);
             const [shopFilters, setShopFilters] = useState({category: '', search: '', brand: 'all' });
+
+            useEffect(() => {
+                const handlePopState = () => {
+                    const params = new URLSearchParams(window.location.search);
+                    setRoute(params.get('route') || 'home');
+                    setProductId(params.get('pid') || null);
+                };
+                window.addEventListener('popstate', handlePopState);
+                return () => window.removeEventListener('popstate', handlePopState);
+            }, []);
+
+            useEffect(() => {
+                const currentParams = new URLSearchParams(window.location.search);
+                const currentRoute = currentParams.get('route') || 'home';
+                const currentPid = currentParams.get('pid') || null;
+                
+                if (route !== currentRoute || (productId !== currentPid && route === 'product')) {
+                    const newUrl = `?route=${route}` + (productId && route === 'product' ? `&pid=${productId}` : '');
+                    window.history.pushState({}, '', window.location.pathname + newUrl);
+                    window.scrollTo(0, 0);
+                }
+            }, [route, productId]);
 
             const navigateToShop = (filters) => {
                 setShopFilters((prev) => ({ ...prev, ...filters }));
